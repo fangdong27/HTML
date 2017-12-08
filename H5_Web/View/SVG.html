@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>SVG测试样例</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no"> 
+    <script src="../js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=hxvQk90wnOk7q1C2z8CQcslMgylMmqOT"></script>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="190">
+        <polygon points="100,10 40,180 190,60 10,60 160,180"
+                 style="fill: lime; stroke: purple; stroke-width: 5; fill-rule: evenodd; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+        </polygon>
+    </svg>
+    <!--定义地图显示容器-->
+    <div id="TencentMap" style="width:400px;height:500px;">获取当前位置信息(因安全问题PC端不能实现)：</div>
+    <div id="BaiDuMap" style="width:500px;height:500px;">获取当前位置信息(因安全问题PC端不能实现)：</div>
+    
+    <div>自动补全</div>
+    <div>
+        <input list="dataList" />
+        <datalist id="dataList">
+            <option>Chrom1e</option>
+            <option>Chr5ome</option>
+            <option>Chrome3</option>
+            <option>Chrome4</option>
+            <option>Chr2ome5</option>
+            <option>Chrome6</option>
+        </datalist>
+    </div>
+
+    <!--<input type="button" onclick="getPosition()" value="获取位置信息" />-->
+    <script src="http://map.qq.com/api/js?v=2.exp" type="text/javascript"></script>
+    <!--获取地理位置信息-->
+    <script src="../js/svg.js"></script>
+    <script>
+
+        if (typeof (Storage) !== "undefined") {
+            // 是的! 支持 localStorage  sessionStorage 对象!
+            // 一些代码.....
+            //alert(2554);
+        } else {
+            // 抱歉! 不支持 web 存储。
+            alert("不支持Web存储！");
+        }
+
+        //var clientWidth = document.documentElement.clientWidth,
+        //clientHeight = document.documentElement.clientHeight;
+        //var container = document.getElementById('container');
+        //container.style.width = 300 + 'px';
+        //container.style.height = 240 + 'px'; 
+    </script>
+</body>
+</html>

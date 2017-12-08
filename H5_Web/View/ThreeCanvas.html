@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="../js/three.min.js"></script>
+    <!--<script src="../js/helvetiker_regular.typeface.js"></script>-->
+    <title>Three.js使用Demo</title>
+    <style>
+        body {
+            text-align: center;
+            /*background-color:#000;*/
+        }
+
+        canvas {
+            margin: 0px auto;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <canvas width="765" height="370" id="textCanvas"></canvas>
+        <canvas width="380" height="370" id="cubeCanvas"></canvas>
+        <canvas width="380" height="370" id="sphereCanvas"></canvas>
+        <canvas width="380" height="370" id="cylinderCanvas"></canvas>
+        <canvas width="380" height="370" id="polyhedronCanvas"></canvas>
+        <canvas width="380" height="370" id="torusCanvas"></canvas>
+        <canvas width="380" height="370" id="materialCanvas"></canvas>
+        <canvas width="765" height="370" id="spotLightCanvas"></canvas>
+        <canvas width="380" height="370" id="torusKnotCanvas"></canvas>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    
+    window.onload = function () {
+        //三维文字
+        TextCanvas();
+        //立体矩形和圆形，可制作扇形
+        CubeGeometry();
+        //球体
+        SphereGeometry();
+        //圆柱体
+        CylinderCanvas();
+        //多面体
+        PolyhedronCanvas();
+        //圆环状
+        TorusCanvas();
+        //设置材质
+        MaterialCanvas();
+        //锥形光源照射
+        SpotLightCanvas();
+        //圆环结
+        TorusKnotCanvas();
+    };
+
+    //三维文字
+    function TextCanvas() {
+        var fontModel;
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("textCanvas") });
+        renderer.setClearColor(0x000000);
+        renderer.shadowMapEnabled = true;//允许阴影映射，渲染阴影需要大量的资源，因此我们需要告诉渲染器我们需要阴影
+        var scene = new THREE.Scene();
+        var camera = new THREE.OrthographicCamera(-1, 15, -2, 3, 1, 10);
+        camera.position.set(0, 0, 0);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera);
+        //加载字体
+        var loader = new THREE.FontLoader();
+        //加载相应的字体，下面字体名和样式组成gentilis_bold.typeface.json 完整文件名
+        //var fontName = "codropsicons";//字体名
+        //var fontWeight = "bold"; //加粗字体
+        var fontJsonUrl = '../js/helvetiker_regular.typeface.js'; //你的字体json路径，文件名规格随意
+
+        loader.load(fontJsonUrl, function (response) {
+            //注意response 这内容比较关键，是否能加载中文就看这个变量了，这个变量里面的glyphs，默认的几种只有英文
+            var options = {
+                size: 2, //字号大小，一般为大写字母的高度
+                height: 2, //文字的厚度
+                weight: 'normal', //值为'normal'或'bold'，表示是否加粗
+                font: response, //字体，默认是'helvetiker'，需对应引用的字体文件
+                style: 'normal', //值为'normal'或'italics'，表示是否斜体
+                bevelThickness: 1, //倒角厚度
+                bevelSize: 1, //倒角宽度
+                curveSegments: 30,//弧线分段数，使得文字的曲线更加光滑
+                bevelEnabled: true, //布尔值，是否使用倒角，意为在边缘处斜切
+            };
+            // font.computeBoundingBox(); // 运行以后设置font的boundingBox属性对象，如果不运行无法获得。
+            ////创建一个三维对象的文本作为一个单一的对象 text输入的文字 options 文字设置
+            var textGeo = new THREE.TextGeometry("Hello World", options);
+            //textGeo.computeBoundingBox();
+            //textGeo.computeVertexNormals();
+
+            //var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+            //var material = new THREE.MultiMaterial([
+            //      new THREE.MeshPhongMaterial({ color: 0xDAA520, shading: THREE.FlatShading }), // front
+            //      new THREE.MeshPhongMaterial({ color: 0xDAA520, shading: THREE.SmoothShading }) // side
+            //]);
+            //textGeo.center();
+            var mat = new THREE.MeshPhongMaterial({
+                color: 0xffe502,
+                specular: 0x009900,
+                shininess: 30,
+                shading: THREE.FlatShading
+            });
+            
+            //设置三维文字
+            fontModel = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({ color: 0x008080 }));//
+            //fontModel.castShadow = true;
+            fontModel.position.set(0,-1.9,0);
+            //scene.add(words);
+            //设置位置
+            //fontModel.position.x = centerOffset;//- (font.boundingBox.max.x - font.boundingBox.min.x) / 2; //计算出整个模型的宽度的一半
+            //fontModel.position.y = 50;
+            //fontModel.position.z = 0;
+
+            //fontModel.rotation.x =  -Math.PI/4;
+            //fontModel.rotation.y = Math.PI * 3;
+            //fontModel.rotation.z = Math.PI;
+            scene.add(fontModel);
+
+            var fontModel2 = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({ color: 0x008080, wireframe: true }));//
+            //fontModel2.castShadow = true;
+            fontModel2.position.set(0, 0.9, 0);
+            scene.add(fontModel2);
+
+            renderer.render(scene, camera);
+        });
+    }
+
+    function CubeGeometry() {
+        //绑定渲染器
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("cubeCanvas") });
+        //设置背景色，用于清除画面的颜色
+        renderer.setClearColor(0x000000);
+        //添加场景
+        var scene = new THREE.Scene();
+
+        //this.fov = fov !== undefined ? fov : 50;    //指明相机的可视角度,可选参数,如果未指定,初始化为50
+        //this.aspect = aspect !== undefined ? aspect : 1;    //指明相机可视范围的长宽比,可选参数,如果未指定,初始化为1
+        //this.near = near !== undefined ? near : 0.1;    //指明相对于深度剪切面的近的距离，必须为正数,可选参数,如果未指定,初始化为0.1
+        //this.far = far !== undefined ? far : 2000;  //指明相对于深度剪切面的近的距离，必须为正数,可选参数,如果未指定,初始化为2000
+        //this.updateProjectionMatrix();  //调用updateProjectionMatrix方法,更新相机的投影矩阵.
+        //添加照相机，采用右手系坐标，定义一个透视投影的照相机
+        var camera = new THREE.PerspectiveCamera(45, 1 / 1, 1, 10);
+        //设置照相机的位置
+        camera.position.set(-5, -2, 5);
+        //添加至场景中
+        scene.add(camera);
+
+        /*Mesh对象,最终的网格对象,有高人把图形学建模比作是制作灯笼,先用Geometry创建灯笼的框架,然后将材质material贴在框架上,最后形成的总体灯笼,就是Mesh对象.下面看一下Mesh对象的用法和具体实现. */
+        //绘制长方形（透视投影）
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 3), new THREE.MeshBasicMaterial({ color: 0xFFEFD5, wireframe: true }));//new THREE.TextGeometry('透视投影', { size: 1, height: 1, font: options })
+        //将绘制的长方形放入场景
+        cube.position.set(1,0,0);
+        scene.add(cube);
+        renderer.render(scene, camera);
+
+        //绘制长方体3维立体（正交投影）
+        /*正交投影照相机，正交投影会拍摄到空间的六个面，所以该方法有六个参数，分别代表六个面OrthographicCamera(left,right,top,bottom,near,far)。
+        这六个面围成的长方体称为视景体，只有视景体内部的物体才能显示在屏幕上，外部的物体将被裁剪。
+        需要保证(right - left)与(top - bottom)的比例与Canvas宽度与高度的比例一致。*/
+        var camera2 = new THREE.OrthographicCamera(-2, 2, -2, 2, 1, 10);
+        camera2.position.set(-1, 2, -5);
+        camera2.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera2);
+        //CubeGeometry(长，宽，高,长分的段数，宽分的段数，高分的段数)
+        var cube2 = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }));
+        cube2.position.set(-1,0,0);
+        scene.add(cube2);
+        var sphere3 = new THREE.Mesh(new THREE.CircleGeometry(2, 14, Math.PI / 6, Math.PI / 3 * 4), new THREE.MeshBasicMaterial({ color: 0x6495ED, wireframe: true }));
+        scene.add(sphere3);
+        //添加渲染
+        renderer.render(scene, camera2);
+    }
+
+    function SphereGeometry() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("sphereCanvas") });
+        //设置背景色，用于清除画面的颜色
+        renderer.setClearColor(0x000000);
+        //添加场景
+        var scene = new THREE.Scene();
+        //创建正交投影照相机
+        var camera = new THREE.OrthographicCamera(-2, 2, -2, 2, 1, 10);
+        camera.position.set(1.5, 4, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera);
+        /*THREE.SphereGeometry(radius(半径), segmentsWidth(经度上切片数), segmentsHeight（纬度上切片数）,
+        phiStart（经度开始的弧度）, phiLength（经度夸过的弧度）, thetaStart, thetaLength)，设置了弧度，则前面设置的切片数是在弧度跨越的区域中进行切片*/
+        var sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2, 14, 16), new THREE.MeshBasicMaterial({ color: 0x008080, wireframe: true }));
+        scene.add(sphere);
+
+        var sphere3 = new THREE.Mesh(new THREE.SphereGeometry(1.9, 14, 18, Math.PI / 6, Math.PI), new THREE.MeshBasicMaterial({ color: 0xC0C0C0, wireframe: true }));
+        scene.add(sphere3);
+
+        //添加渲染
+        renderer.render(scene, camera);
+    }
+
+    function CylinderCanvas() {
+        //设置渲染器
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("cylinderCanvas") });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(60, 2 / 2, 1, 10);
+        camera.position.set(0, 0, 2);
+        scene.add(camera);
+        /*THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded(是否没有顶面和底面，默认false，表示有顶面和底面))*/
+        var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.9, 1, 18, 6), new THREE.MeshBasicMaterial({ color: 0x66CDAA, wireframe: true }));
+        scene.add(cylinder);
+        renderer.render(scene, camera);
+    }
+
+    function PolyhedronCanvas() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("polyhedronCanvas") });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(60, 1 / 1, 1, 10);
+        camera.position.set(0, 0, 3);
+
+        var polyhedron = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2), new THREE.MeshBasicMaterial({ color: 0xFA8072, wireframe: true }));
+        scene.add(polyhedron);
+        renderer.render(scene, camera);
+    }
+
+    function TorusCanvas() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("torusCanvas") });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        //var camera = new THREE.PerspectiveCamera(65, 1.1 / 1, 1, 10);
+        //camera.position.set(0, 0,1.5);
+        var camera = new THREE.OrthographicCamera(-2, 2, -2, 2, 1, 10);
+        camera.position.set(-1.5, 4, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera);
+        //THREE.TorusGeometry(radius(圆的半径), tube（管道半径）, radialSegments（每节管道的面数）, tubularSegments（管道切片数）, arc（圆环面的弧度，默认Math.PI*2）)
+        var polyhedron = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.5, 12, 18), new THREE.MeshBasicMaterial({ color: 0xDAA520, wireframe: true }));
+        scene.add(polyhedron);
+        //var text = new THREE.Mesh(new THREE.TextGeometry('HELLO WORD!', { size: 14, height: 16 }));
+        //scene.add(text);
+        renderer.render(scene, camera);
+
+    }
+
+    function MaterialCanvas() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("materialCanvas") });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        var camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 1, 10);
+        camera.position.set(-2, -2, 2);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera);
+
+        //var light = new THREE.PointLight(0xffffff, 1, 100);
+        var light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(-1, -2, 2);
+        scene.add(light);
+
+        var material = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 2), new THREE.MeshLambertMaterial({ color: 0xADFF2F }));//
+        scene.add(material);
+        //var material2 = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 3), new THREE.MeshLambertMaterial({ color: 0xffff00, emissive: 0xff0000 })); //0xF0E68C
+        //scene.add(material2);
+        renderer.render(scene, camera);
+    }
+
+    function SpotLightCanvas() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("spotLightCanvas") });
+        renderer.setClearColor(0x000000);
+        renderer.shadowMapEnabled = true;//允许阴影映射，渲染阴影需要大量的资源，因此我们需要告诉渲染器我们需要阴影
+        var scene = new THREE.Scene();
+        //生成一个坐标轴，辅助线
+        var axes = new THREE.AxisHelper(20);
+        //var camera = new THREE.OrthographicCamera(-2.5, 2.5, 5, -5, 1, 10000);
+        //camera.position.set(-1.5, 3, 2);
+        //camera.lookAt(new THREE.Vector3(0, 0, 0));
+        //设置相机的一些参数。
+        var view_angle = 60;
+        aspect = 765 / 370;
+        near = 0.1;
+        far = 10000;
+        var camera = new THREE.PerspectiveCamera(view_angle, aspect, near, far);
+        camera.position.z = 7;
+        camera.position.x = -2;
+        camera.position.y = -1;
+        scene.add(camera);
+        //生成平面
+        var planeGeometry = new THREE.PlaneGeometry(30, 30, 2, 10);
+        //生成材质
+        var planeMesh = new THREE.MeshLambertMaterial({ color: 0x808080 });
+        //生成一个网格，将平面和材质放在一个网格中，组合在一起，组成一个物体
+        var plane = new THREE.Mesh(planeGeometry, planeMesh);
+        //plane.rotation.x = 0.5 * Math.PI;//将平面沿着x轴进行旋转
+        plane.position.x = 0;
+        plane.position.y = 2;
+        plane.position.z = 0;
+        plane.receiveShadow = true;//平面进行接受阴影
+        scene.add(plane);
+
+        //聚光灯光源
+        var pointColor = "#ffffff";
+        var spotLight = new THREE.SpotLight(0x87CEFA);
+        spotLight.position.set(1, -1, 50);
+        spotLight.castShadow = true;
+        spotLight.shadowCameraNear = 2;
+        spotLight.shadowCameraFar = 1000;
+        spotLight.shadowCameraFov = 30;
+        spotLight.target = plane;//光照照向地面 
+        spotLight.distance = 0;
+        spotLight.angle = 0.3;
+        spotLight.shadowCameraVisible = true;
+        //spotLight.shadowMapWidth = 10;
+        //spotLight.shadowMapHeight = 10;
+        //spotLight.shadowDarkness = 0.3;
+        scene.add(spotLight);
+
+        //设置球体的值
+        var sphere = new THREE.SphereGeometry(1, 16, 16);
+        var sphereMaterial = new THREE.MeshLambertMaterial({ color: 0xCC0000 });
+        var sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+        sphereMesh.castShadow = true;  
+        sphereMesh.position.set(-1, 0, 0);
+        scene.add(sphereMesh);
+
+        //设置正方体
+        var cube = new THREE.CubeGeometry(1, 1, 1);
+        var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xFFB6C1 });
+        var cubeMesh = new THREE.Mesh(cube, cubeMaterial);
+        cubeMesh.castShadow = true;
+        cubeMesh.position.set(1, 0, 0);
+        scene.add(cubeMesh);
+
+        //设置长方体
+        var cube2 = new THREE.CubeGeometry(1, 2, 1);
+        var cube3 = new THREE.SphereGeometry(1, 16, 16);
+        var cubePhongMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffff00, shininess: 1000 });
+        var cubeMeshPhong = new THREE.Mesh(cube2, cubePhongMaterial);
+        cubeMeshPhong.castShadow = true;
+        cubeMeshPhong.position.set(-3, -1, 0);
+        scene.add(cubeMeshPhong);
+        var cubeMeshPhong2 = new THREE.Mesh(cube3, cubePhongMaterial);
+        cubeMeshPhong2.castShadow = true;
+        cubeMeshPhong2.position.set(-5, -1, 0);
+        scene.add(cubeMeshPhong2);
+
+        //设置正方体，显示法向材质
+        var cube4 = new THREE.CubeGeometry(2, 2, 2);
+        var cubeNormalMaterial = new THREE.MeshNormalMaterial();
+        var cubeNormalMesh = new THREE.Mesh(cube4, cubeNormalMaterial);
+        cubeNormalMesh.castShadow = true;
+        cubeNormalMesh.position.set(1, -3, 0);
+        scene.add(cubeNormalMesh);
+
+        scene.add(axes); 
+        renderer.render(scene, camera);
+
+       
+    }
+
+    function TorusKnotCanvas() {
+        var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("torusKnotCanvas") });
+        renderer.setClearColor(0x000000);
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(60, 1 / 1, 1, 100);
+        camera.position.set(0, 0, 2);
+        //camera.rotation.z = Math.PI / 6;
+        scene.add(camera);
+
+        var trousKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.5, 0.2, 32, 8), new THREE.MeshBasicMaterial({ color: 0x90EE90, wireframe: true }));
+        scene.add(trousKnot);
+
+        renderer.render(scene,camera);
+    }
+</script>

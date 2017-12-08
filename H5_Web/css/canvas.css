@@ -1,0 +1,43 @@
+﻿* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Microsoft YaHei','Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+    font-size: 14px;
+}
+
+.cherryDiv {
+    width: 450px;
+    height: auto;
+    margin: 20px 0px;
+    color: #1f4351;
+    
+}
+
+.title {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: rgba(255, 0, 0, 0.45);
+}
+
+#cherry {
+    /*border:1px solid #6e6e6e;
+    background:url(../img/bg-gz.jpg) repeat;*/
+    margin-top: 10px;
+}
+
+.test {
+    background-color: rgba(213,236,253,0.5); /*#d5ecfd;*/
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#e5d5ecfd,endColorstr=#e5d5ecfd); /*IE8支持*/
+}
+
+
+span i, span s, span u, span b {
+    padding:0px 10px;
+}

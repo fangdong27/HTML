@@ -1,0 +1,576 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>HTML5的Canvas标签--画图</title>
+    <!--<script src="../domWeb.js"></script>-->
+    <style>
+        #heatmap {
+            background-image: url("../../img/mapbg.jpg");
+        }
+    </style>
+</head>
+<body>
+    <!-- background: url(../img/gravel.png) repeat;   -->
+    <canvas id="CanvasTree" width="500" height="700" style="float: left; border: 1px solid #808080;margin:0px 20px 10px 0px; "></canvas>
+    <!--<div style="width:500px;height:700px; background: url(../img/gravel.png) repeat; ">
+    </div>-->
+    <div style="margin-left:10px;display:inline-block;">
+        <h2>热点地图</h2>
+        <canvas id="heatmap" style="border:1px solid #ccc;" height="300" width="300" class="clear">
+            您的浏览器不支持 HTML5 canvas 标签。
+        </canvas>
+        <button id="resetBtn">Reset</button>
+        <canvas id="rectLinearGradient" width="300" height="150">
+            您的浏览器不支持 HTML5 canvas 标签。
+        </canvas>
+        <img id="scream" src="../../img/img_the_scream.jpg" style="display:none;" />
+        <canvas id="imgBg" width="242" height="297" style="border:1px solid #ccc;">
+            您的浏览器不支持 HTML5 canvas 标签。
+        </canvas>
+    </div>
+
+    <div style="margin: 10px; width: 500px; height: 300px; display: inline-block;">
+        <div>
+            <h2>径向渐变</h2> 
+            <canvas id="arcLinearGradient" width="300" height="150">
+                您的浏览器不支持 HTML5 canvas 标签。
+            </canvas>            
+        </div> 
+    </div>
+</body>
+</html>
+<script>
+    //渐变
+    var linear = document.getElementById("rectLinearGradient");
+    var arc = document.getElementById("arcLinearGradient");
+    var ctx = linear.getContext("2d");
+    var ctx2 = arc.getContext("2d");
+    var gradient = ctx.createLinearGradient(0,0,200,0);
+    gradient.addColorStop(0, "#f2f2f2");
+    gradient.addColorStop(0.5, "#666666");
+    gradient.addColorStop(1, "#455555");
+
+    ctx.save();//存储上面的内容
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 300, 150);
+    ctx.restore();//恢复
+
+    ctx.save();
+    ctx.font = "22px 微软雅黑";
+    ctx.fillText("实心线性渐变", 50, 50);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = "22px 微软雅黑";
+    ctx.strokeText("空心LinearGradient", 50, 100);
+    ctx.restore();
+
+    var radial = ctx.createRadialGradient(40, 60, 5, 30, 80, 60); //75, 50, 5, 90, 60, 100
+    radial.addColorStop(0, "#565656");
+    radial.addColorStop(0.5, "#717717");
+    radial.addColorStop(1, "#838383");
+
+    ctx2.fillStyle = radial;
+    ctx2.fillRect(0, 0, 300, 150);
+
+    //放图片到画布上
+    var imgBg = document.getElementById("imgBg");
+    var ctxImg = imgBg.getContext("2d");
+    var img = document.getElementById("scream");
+
+    img.onload = function () {
+        ctxImg.drawImage(img,10,10);
+    }
+
+    //操作热点地图
+    var points = {};
+    var scale = 3;
+    var x = -1;
+    var y = -1;
+
+    function loadDemo() {
+        document.getElementById("resetBtn").onclick = reset;
+        var canvas = document.getElementById("heatmap");
+        var context = canvas.getContext('2d');
+        
+        //设置全局透明度
+        context.globalAlpha = 0.2;
+        //如何将一个源（新的）图像绘制到目标（已有）的图像上,有多种值可设置
+        //lighter: 显示源图像 + 目标图像
+        context.globalCompositeOperation = "lighter";
+
+        function sample() {
+            if (x != -1) {
+                addToPoint(x, y);
+            }
+            setTimeout(sample, 100);
+        }
+
+        canvas.onmousemove = function (e) {
+            x = e.clientX - e.target.offsetLeft;
+            y = e.clientY - e.target.offsetTop;
+            addToPoint(x, y);
+        }
+        sample();
+
+        function reset() {
+            points = {};
+            context.clearRect(0, 0, 300, 300);
+            x = -1;
+            y = -1;
+        }
+
+        function getColor(intensity) {
+            var colors = ["#072933", "#2e4045", "#8c593b", "#b2814e", "#fac268", "#fad237"];
+            return colors[Math.floor(intensity / 2)];
+        }
+
+        function drawPoint(x, y, radius){
+            context.fillStyle = getColor(radius);
+            radius = Math.sqrt(radius) * 6;
+
+            context.beginPath();
+            context.arc(x, y, radius, 0, Math.PI * 2, true);
+
+            context.closePath();
+            context.fill();
+        }
+
+        function addToPoint(x, y) {
+            x = Math.floor(x / scale);
+            y = Math.floor(y / scale);
+
+            if (!points[[x, y]]) {
+                points[[x, y]] = 1;
+            }
+            else if (points[[x, y]] == 10) {
+                return;
+            }
+            else {
+                points[[x, y]]++;
+            }
+
+            drawPoint(x * scale, y * scale, points[[x, y]]);
+        }
+    }
+    //添加监听事件，参数表示(事件类型：click，mouseover(不需添加前缀on)，触发后调用的函数名，描述事件是冒泡(false)还是捕获(true))
+    //冒泡：元素内部事件会先触发，之后再触发外部事件，捕获则相反（例：<div><p></p></div>，点击时冒泡是先触发p标签的点击事件，再触发div的事件）
+    window.addEventListener("load", loadDemo, true);
+
+    //绘制森林图
+    var gravel = new Image();
+    var soil = new Image();
+    gravel.src = "../../img/soil2.png";
+
+    gravel.onload = function () {
+        drawTrails();
+    }
+
+    //画树冠的形状
+    function createCanopyPath(context) {
+        //绘制树冠（左）
+        context.beginPath();
+        context.moveTo(-25, -50);//定义开始位置
+        context.lineTo(-10, -80);//结束位置
+        context.lineTo(-20, -80);
+        context.lineTo(-5, -110);
+        context.lineTo(-15, -110);
+        //绘制树顶
+        context.lineTo(0, -140);
+        //树冠（右）
+        context.lineTo(15, -110);
+        context.lineTo(5, -110);
+        context.lineTo(20, -80);
+        context.lineTo(10, -80);
+        context.lineTo(25, -50);
+        //连接起点，闭合路径
+        context.closePath();
+    }
+
+    //树的枝干 Move tree drawing into its own function for reuse
+    function drawTree(context) {
+        //createLinearGradient(渐变1开始的位置, 渐变2开始的位置, 渐变1结束的位置,渐变2结束的位置)
+        var trunkGradient = context.createLinearGradient(-5, -50, 5, -50);
+        trunkGradient.addColorStop(0, '#663300');
+        trunkGradient.addColorStop(0.4, '#996600');
+        trunkGradient.addColorStop(1, '#552200');
+        context.fillStyle = trunkGradient;
+        context.fillRect(-5, -50, 10, 50);
+
+        var canopyShadow = context.createLinearGradient(0, -50, 0, 0);
+        canopyShadow.addColorStop(0, 'rgba(0, 0, 0, 0.5)');
+        canopyShadow.addColorStop(0.2, 'rgba(0, 0, 0, 0.0)');
+        context.fillStyle = canopyShadow;
+        context.fillRect(-5, -50, 10, 50);
+
+        createCanopyPath(context);
+
+        context.lineWidth = 4;
+        context.lineJoin = 'round';
+        context.strokeStyle = '#663300';
+        context.stroke();
+
+        context.fillStyle = '#339900';
+        context.fill();
+    }
+
+    //太阳
+    function createSun(context) {
+        //渐变圆形的位置(渐变开始圆1的x坐标，圆1的y坐标，圆1的半径，外层圆的x，y，半径)
+        var sunGradient = context.createRadialGradient(432, 50, 20, 432, 50, 80);
+        sunGradient.addColorStop(0, 'red');//添加渐变圆的颜色,addColorStop(0.0-1.0,color):渐变开始与结束之间的位置
+        sunGradient.addColorStop(0.4, 'yellow');
+        context.fillStyle = sunGradient;
+        //开始画圆
+        context.beginPath();
+        context.arc(432, 50, 44, 0, Math.PI * 2, true);
+        context.closePath();
+        context.fill();
+        //背景矩形位置fillRect(坐标x，坐标y，宽，高)
+        //context.fillRect(260, 10, 85, 84);
+        //context.fill();
+    }
+
+    //纸箱人
+    function createPerson(context) {
+        //纸箱人头部
+        var personHead = context.createRadialGradient(40, 405, 27, 40, 405, 35);
+        personHead.addColorStop(0, '#d2bda2');
+        // person.addColorStop(0.4, '#cab394');
+        personHead.addColorStop(0.8, '#c8b187');
+        context.fillStyle = personHead;
+        context.fillRect(10, 380, 60, 50);
+
+        //纸箱人胳膊(左)
+        var personArm = context.createRadialGradient(23, 440, 12, 23, 445, 17);
+        personArm.addColorStop(0, '#cfb896');
+        personArm.addColorStop(0.9, '#b99d76');
+
+        context.fillStyle = personArm;
+        context.translate(140, 250);
+        context.scale(0.5, 0.5);
+        context.rotate(Math.PI / 5);
+        context.fillRect(23, 430, 25, 80);
+
+        //纸箱人胳膊（右）
+        var personArm = context.createRadialGradient(51, 440, 12, 51, 445, 17);
+        personArm.addColorStop(0, '#cfb896');
+        personArm.addColorStop(0.9, '#b99d76');
+
+        context.fillStyle = personArm;
+        context.translate(152, 174);
+        context.scale(0.5, 0.5);
+        context.rotate(Math.PI / 7);
+        context.fillRect(51, 440, 170, 50);
+        context.restore();
+
+        //纸箱人身体
+        var personBody = context.createRadialGradient(42, 452, 22, 42, 457, 35);
+        personBody.addColorStop(0, '#cfb896');
+        personBody.addColorStop(0.9, '#b99d76');
+        context.fillStyle = personBody;
+        context.fillRect(23, 430, 35, 50);
+
+        //纸箱人腿
+        var personLeg = context.createRadialGradient(42, 492, 22, 42, 497, 35);
+        personLeg.addColorStop(0, '#cfb896');
+        personLeg.addColorStop(0.9, '#b99d76');
+        context.fillStyle = personLeg;
+        context.fillRect(28, 490, 13, 30);
+
+        //纸箱人腿
+        var personLeg = context.createRadialGradient(42, 492, 22, 42, 497, 35);
+        personLeg.addColorStop(0, '#cfb896');
+        personLeg.addColorStop(0.9, '#b99d76');
+        context.fillStyle = personLeg;
+        context.fillRect(42, 490, 13, 30);
+
+        //绘制裙摆
+        context.beginPath();
+        context.moveTo(25, 480);
+        context.lineTo(25, 495);
+        context.lineTo(58, 495);
+        context.lineTo(57, 480);
+        //连接起点，闭合路径
+        context.closePath();
+        //context.lineTo(29, 500);
+        context.fillStyle = '#cfb896';
+        context.fill();
+
+        //绘制裙摆
+        context.beginPath();
+        context.moveTo(25, 480);
+        context.lineTo(21, 495);
+        context.lineTo(16, 480);
+        context.lineTo(23, 465);
+        //连接起点，闭合路径
+        context.closePath();
+        //context.lineTo(29, 500);
+        context.fillStyle = '#cfb896';
+        context.fill();
+
+        //绘制裙摆
+        context.beginPath();
+        context.moveTo(57, 480);
+        context.lineTo(63, 495);
+        context.lineTo(63, 480);
+        context.lineTo(57, 465);
+        //连接起点，闭合路径
+        context.closePath();
+        //context.lineTo(29, 500);
+        context.fillStyle = '#cfb896';
+        context.fill();
+
+
+    }
+
+    //画左右眼
+    function createEye(context) {
+        context.beginPath();
+        context.arc(29, 400, 5, 0, Math.PI * 2, true);
+        context.closePath();
+        context.fillStyle = '#654d41';
+        context.fill();
+    }
+
+    //画嘴巴
+    function createMouse(context) {
+        context.beginPath();
+        context.moveTo(33, 420);
+        context.lineTo(41, 412);
+        context.lineTo(48, 420);
+        //连接起点，闭合路径
+        context.closePath();
+        context.fillStyle = '#715c61';
+        context.fill();
+    }
+
+    //画图
+    function drawTrails() {
+        var canvas = document.getElementById('CanvasTree');
+        var context = canvas.getContext('2d');
+
+        // Draw the first tree at X=130, Y=250
+        context.save();
+        context.translate(170, 250);
+        drawTree(context);
+        context.restore();
+
+        // Draw the second tree at X=260, Y=500
+        context.save();
+        context.translate(260, 530);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(2, 2);
+        drawTree(context);
+        context.restore();
+
+        // Draw the three tree at X=160, Y=500
+        context.save();
+        context.translate(400, 600);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(2, 2);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(120, 300);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        //context.scale(2, 2);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(50, 310);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(1.5, 1.5);
+        drawTree(context);
+        context.restore();
+
+        //绘制树的阴影
+        context.save();
+        context.translate(260, 200);
+        //transform(水平缩放，水平倾斜，垂直倾斜（正值=靠左，赋值=靠右），垂直缩放，水平移动，垂直移动)
+        //X值随着Y值的增加而增加，借助拉伸变换，可以创建一颗作阴影的倾斜的树
+        context.transform(1, 0, 0.7, 0.5, 0, 1);
+        context.scale(1, 0.6);
+
+        context.fillStyle = 'rgba(0,0,0,0.2)';
+        context.fillRect(-5, -50, 10, 50);
+        createCanopyPath(context);
+        context.fill();
+        context.restore();
+
+        context.save();
+        context.translate(260, 200);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(160, 500);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        //context.scale(2, 2);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(80, 700);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.7, 0.7);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(130, 700);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.4, 0.4);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(160, 580);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.4, 0.4);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(85, 405);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.4, 0.4);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(10, 580);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.4, 0.4);
+        drawTree(context);
+        context.restore();
+
+
+        context.save();
+        context.translate(130, 570);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.4, 0.4);
+        drawTree(context);
+        context.restore();
+
+        context.save();
+        context.translate(400, 200);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.7, 0.7);
+        drawTree(context);
+        context.restore();
+
+        //绘制树的阴影
+        context.save();
+        context.translate(330, 195);
+        //transform(水平缩放，水平倾斜，垂直倾斜（正值=靠左，赋值=靠右），垂直缩放，水平移动，垂直移动)
+        //X值随着Y值的增加而增加，借助拉伸变换，可以创建一颗作阴影的倾斜的树
+        context.transform(1, 0, 0.6, 0.5, 0, 1);
+        context.scale(1, 0.6);
+
+        context.fillStyle = 'rgba(0,0,0,0.2)';
+        context.fillRect(-5, -50, 10, 50);
+        createCanopyPath(context);
+        context.fill();
+        context.restore();
+        //绘制树
+        context.save();
+        context.translate(330, 200);
+        // Scale this tree twice normal in both dimensions设置树的大小
+        context.scale(0.9, 0.9);
+        drawTree(context);
+        context.restore();
+
+        //文本绘制阴影
+        context.save();
+        //context.translate(122,48);不需要平移
+        context.shadowColor = 'rgba(0,0,0,0.2)';
+        context.shadowOffsetX = 15;
+        context.shadowOffsetY = -10;
+        //高斯模糊，值越大边缘越模糊
+        context.shadowBlur = 2;
+        //执行上述代码后，canvas渲染器会自动应用阴影效果，直到恢复canvas状态或重置阴影属性。故该处没有添加restore()方法
+        //context.save();不需单独保存，与文本阴影一起保存
+        context.font = "40px 微软雅黑";
+        context.fillStyle = '#960';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText('小纸盒的幻境森林！', 120, 50, 200);
+        context.restore(); 
+
+        //画太阳
+        context.save();
+        createSun(context);
+        context.restore();
+
+        //画纸箱人
+        context.save();
+        createPerson(context);
+        context.restore();
+
+        //画眼睛
+        context.save();
+        createEye(context);
+        context.restore();
+
+        context.save();
+        context.translate(23, 0);
+        createEye(context);
+        context.restore();
+
+        //嘴巴
+        context.save();
+        createMouse(context);
+        context.restore();
+
+
+        //设置小路的位置
+        context.save();
+        context.translate(-3, 350);
+        context.beginPath();
+        context.moveTo(0, 0);
+        //quadraticCurveTo(二次贝塞尔曲线控制点x坐标，二次贝塞尔曲线控制点y坐标，结束点的x坐标，结束点的y坐标)
+        //2x正值越大越靠右，2y负值越小越靠上
+        context.quadraticCurveTo(170, -50, 260, -130);
+        //context.quadraticCurveTo(210, -150, 310, -150);
+        context.quadraticCurveTo(290, -150, 505, -150);
+        context.strokeStyle = context.createPattern(gravel, 'repeat');
+        context.lineWidth = 20;
+        context.stroke();
+        context.restore();
+
+        //设置小路的位置
+        context.translate(120, 300);
+        context.beginPath();
+        context.moveTo(0, 0);
+        //quadraticCurveTo(二次贝塞尔曲线控制点x坐标，二次贝塞尔曲线控制点y坐标，结束点的x坐标，结束点的y坐标)
+        //2x正值越大越靠右，2y负值越小越靠上
+        context.quadraticCurveTo(0, 130, -130, 420);
+        //context.quadraticCurveTo(210, -150, 310, -150);
+        //context.quadraticCurveTo(310, -250, 410, -250);
+        context.strokeStyle = context.createPattern(gravel, 'repeat');
+        context.lineWidth = 20;
+        context.stroke();
+        context.restore();
+
+
+        //设置小路的位置
+        context.translate(-60, 400);
+        context.beginPath();
+        context.moveTo(-8, -130);
+        //quadraticCurveTo(二次贝塞尔曲线控制点x坐标，二次贝塞尔曲线控制点y坐标，结束点的x坐标，结束点的y坐标)
+        //2x正值越大越靠右，2y负值越小越靠上
+        context.quadraticCurveTo(30, -120, 460, -40);
+        //context.quadraticCurveTo(210, -150, 310, -150);
+        //context.quadraticCurveTo(310, -250, 410, -250);
+
+        context.strokeStyle = context.createPattern(gravel, 'repeat');
+        context.lineWidth = 20;
+        context.stroke();
+        context.restore(); 
+    }
+</script>

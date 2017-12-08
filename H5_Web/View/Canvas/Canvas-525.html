@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Canvas-525</title>
+    <link rel="stylesheet" href="../../css/canvas.css" />
+    <script>
+        function write_sum() {
+            x = 5
+            y = 3
+            document.forms["sumform"]["sum"].value = x + y;
+        }
+
+    </script>
+</head>
+<body onload="write_sum()">
+    <div class="cherryDiv">
+        <div class="title">布格上的樱桃</div>
+        <canvas id="cherry" width="450" height="290">
+            您的浏览器不支持 HTML5 canvas 标签，请升级最新版的浏览器查看更好地效果！
+        </canvas>
+    </div>
+    <div style="margin-bottom:10px;" class="test">
+        <img src="../../img/img_the_scream.jpg" style="vertical-align:middle;display:none;width:300px;height:200px;" id="imgSource" />
+        <span style="background-color: #86a737;">vertical-align测试</span>
+        <canvas id="imgCanvas" width="300" height="200">您的浏览器不支持 HTML5 canvas 标签，请升级最新版的浏览器查看更好地效果！</canvas>
+    </div>
+    <div>
+        <form onsubmit="return false" oninput="r.value=parseInt(a.value)+parseInt(b.value)">
+            <input name="a" type="text" />+
+            <input name="b" type="text" />=
+            <output name="r" for="a b"></output>
+        </form>
+
+        <form action="form_action.asp" method="get" name="sumform" style="height:50px;">
+            <output name="sum"></output>
+        </form>
+
+    </div>
+    <div style="margin:10px 0px;">
+        <canvas id="Snoopy" width="900" height="500">您的浏览器不支持 HTML5 canvas 标签，请升级最新版的浏览器查看更好地效果！</canvas>
+        <div style="margin-left:20px;">
+            <input type="text" list="listData" placeholder="输入你喜欢的小动物" />
+            <datalist id="listData">
+                <option>小猫</option>
+                <option>小狗</option>
+                <option>小仓鼠</option>
+                <option>长颈鹿</option>
+                <option>大象</option>
+                <option>大老虎</option>
+                <option>长板凳</option>
+                <option>兔子</option>
+            </datalist>
+            <span style="margin:0px 10px"><i>倾斜</i><s>删除线</s><b>加粗</b><u>加下划线</u></span>
+            <label for="lblCont">Label的内容：</label><br />
+            <input type="text" id="lblCont" />
+            <progress max="200">进度：</progress>
+        </div>
+    </div>
+    <div>
+        <form>
+            <div>点击文本触发按钮事件：</div>
+            <label for="male">Male:</label>
+            <input id="male" type="radio" name="sex" />
+            <label for="female">Female:</label>
+            <input id="female" type="radio" name="sex" />
+            <div>HTML5的<mark>Canvas</mark>太强大！</div>
+        </form>
+    </div>
+    <div>
+        <div style="width: 300px; height: 200px; display: inline-block;">
+            <canvas id="myCanvas2" width="300" height="200" style="border:1px solid #ccc;margin-left:20px;">您的浏览器不支持 HTML5 canvas 标签，请升级最新版的浏览器查看更好地效果！</canvas>
+        </div>
+        <div style="width:300px;height:200px;display:inline-block;*display:inline;*zoom:1;">
+            <canvas id="Marquee" width="300" height="200">您的浏览器不支持 HTML5 canvas 标签，请升级最新版的浏览器查看更好地效果！</canvas>
+        </div>
+    </div>
+    <div style="">
+        <div style="column-count:2;column-gap:30px;column-rule:10px solid red;width:500px;height:auto;margin:15px;display:inline-block;vertical-align:top;">
+            Cross-document messaging
+            Cross-document messaging 简介
+            由于同源策略的限制，JavaScript 跨域的问题，一直是一个颇为棘手的问题。HTML5 提供了在网页文档之间互相接收与发送信息的功能。
+            使用这个功能，只要获取到网页所在窗口对象的实例，不仅同源（域 + 端口号）的 Web 网页之间可以互相通信，甚至可以实现跨域通信。
+            要想接收从其他窗口发送来的信息，必须对窗口对象的 onmessage 事件进行监听，其它窗口可以通过 postMessage 方法来传递数据。
+            该方法使用两个参数：第一个参数为所发送的消息文本，但也可以是任何 JavaScript 对象（通过 JSON 转换对象为文本），
+            第二个参数为接收消息的对象窗口的 URL 地址，可以在 URL 地址字符串中使用通配符'*'指定全部地。
+
+            在 Cross-document messaging 中使用 postMessage 和 onmessage
+            为了实现不同域之间的通信，需要在操作系统的 hosts 文件添加两个域名，进行模拟。
+            清单 3. hosts 文件中添加两个不同的域名
+            127.0.0.1 	 parent.com
+            127.0.0.1 	 child.com
+            在父网页中通过 iframe 嵌入子页面，并在 JavaScript 代码中调用 postMessage 方法发送数据到子窗口。
+        </div>
+        <div id="result" style="display: inline-block;width:500px;">
+            Web Worker的作用：<br />
+        </div>
+
+    </div>
+</body>
+</html>
+<script src="../../js/canvas.js"></script>
+<script>
+    console.log("%c 控制台输出值,http://www.baidu.com.cn", "font-weight:bolder;color:green;font-size:16px");
+    console.log("%c", "padding:30px 300px;line-height:70px;background:url('http://www.baidu.com/img/baidu_jgylogo3.gif') no-repeat; ");//好像不支持本地图片
+    console.warn("警告！");
+
+    //console.error("错误！");
+    //var gravel = new Image();
+    //gravel.src = "../../img/bg-gz.jpg";
+
+    //gravel.onload = function () {
+    //  drawMain();
+    // }
+
+    
+</script>

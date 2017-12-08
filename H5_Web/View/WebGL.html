@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <title>WebGl验证</title>
+    <style>
+        .webglDiv {
+            min-width: 1200px;
+            height: 600px;
+            margin: 10px auto;
+            text-align: center;
+        }
+        canvas {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="webglDiv">
+        <canvas id="WebGL" width="500" height="600">您的浏览器不支持canvas标签</canvas>
+    </div>
+</body>
+</html>
+<script>
+    //var arrayBuffer = new ArrayBuffer(20);//为arrayBuffer分配内存20B
+    //var blength = arrayBuffer.byteLength;//获取arrayBuffer的字节数
+    //var dataView = new DataView(arrayBuffer, 7, 10);//创建一个从字节7到字节16的新视图
+    var canvas = document.getElementById("WebGL");
+
+    if (canvas.getContext) {//支持的话，返回function类型
+        var gl = canvas.getContext("experimental-webgl", {preserveDrawingBuffer:true});
+        
+        if (gl){//Object类型
+            gl.clearColor(0, 0, 0, 1);//black,用黑色表示清除色
+            gl.clear(gl.COLOR_BUFFER_BIT);//清除之前的颜色缓冲区，用上面设置的颜色值代替
+            gl.viewport( canvas.width/2, canvas.height/2,50,50);//设置视口宽高
+            var buffer = gl.createBuffer();//创建WebGL缓存区
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);//将缓存取绑定到WebGL上下文
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0.5, 1]), gl.STATIC_DRAW);
+
+            var errorCode = gl.getError();//手动调用检测错误的方法
+            while (errorCode) {//循环判断，直到输出gl.NO_ERROR
+                console.log("WebGL报错：" + errorCode);
+                errorCode = gl.getError();
+            }
+        }
+    }
+</script>

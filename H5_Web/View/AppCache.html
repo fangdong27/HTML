@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" manifest="../index.appcache">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //添加页面加载函数
+    window.addEventListener('load', function (e) {
+
+        //为applicationCache对象添加updateready事件 
+        window.applicationCache.addEventListener('updateready', function (e) {
+            //表示manifest中列举的文件已经重新下载并更新成功
+            if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+                //使用swapCache()方法更新到应用程序中
+                window.applicationCache.swapCache();
+
+                if (confirm('A new version of this site is available. Load it?')) {
+                    //重新加载当前页面
+                    window.location.reload();
+
+                }
+
+            } else {
+                //manifest文件没有变化
+                console.log("manifest 没有改变");
+            }
+
+        }, false);
+
+    }, false);
+</script>

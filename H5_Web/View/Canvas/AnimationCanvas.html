@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>动画</title>
+    <script src="../../js/three.min.js"></script>
+    <script src="../../js/Event.js"></script>
+</head>
+<body>
+    <canvas width="380" height="370" id="animationCanvas"></canvas>
+    <canvas width="380" height="370" id="sphereCanvas"></canvas>
+    <canvas width="380" height="370" id="torusKnotCanvas"></canvas>
+    <div id="container" onclick="changeColor();" style="width:100%; height:100%; background-color:rgb(204, 102, 0);">
+        click to change color
+    </div>
+</body>
+</html>
+<script>
+    //假设http://www.baidu.com接收到信息 
+
+    var container = document.getElementById('container');
+
+    window.addEventListener('message', function (e) {
+        console.log("跨域地址："+e.origin);
+        if (e.source != window.parent) return;
+        var color = container.style.backgroundColor;
+        //window.parent.postMessage(color, '*');
+        top.postMessage(color, 'http://localhost:8107/iframeHtml.html');
+    }, false);
+
+    //EventUtil.addHandler(window, "message", function (event) {
+    //    console.log(event.origin);
+    //    //验证发送消息的域是已知的域
+    //    if (event.origin == "http://localhost:8107/iframeHtml.html") {
+    //        //处理发送过来的数据
+    //        postMessage(event.data);
+    //        //发送回执(可选)
+    //        event.source.postMessage("Received", "http://localhost:8107/iframeHtml.html");
+    //    }
+    //});
+
+    function changeColor() {
+        var color = container.style.backgroundColor;
+        if (color == 'rgb(204, 102, 0)') {
+            color = 'rgb(204, 204, 0)';
+        } else {
+            color = 'rgb(204,102,0)';
+        }
+        container.style.backgroundColor = color;
+        //window.parent.postMessage(color, '*');
+        top.postMessage(color, '*');
+    }
+
+    //绘制正方体滚动图
+    threeStart();
+    //绘制滚动球体
+    drawEarth();
+    //绘制圆环结
+    drawTorus();
+
+    var renderer, camera, scene, light, object;
+    var width, height;
+    function initRenderer() {
+        width = document.getElementById('animationCanvas').clientWidth;
+        height = document.getElementById('animationCanvas').clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('animationCanvas')
+        });
+        renderer.setSize(width, height);
+        renderer.setClearColor(0x000000, 1.0);
+    }
+
+    function initCamera() {
+        camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 200;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x: 0,
+            y: 0,
+            z: 0
+        });
+    }
+
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    function initObject() {
+        //new THREE.SphereGeometry(1.2, 14, 16), new THREE.MeshBasicMaterial({ color: 0x008080, wireframe: true }
+        var geometry = new THREE.CubeGeometry(100, 100, 100);
+        object = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+        scene.add(object);
+    }
+
+    function render() {
+        requestAnimationFrame(render);//设置动画效果
+        object.rotation.x += 0.05;
+        object.rotation.y += 0.05;
+        renderer.render(scene, camera);
+    }
+
+    function threeStart() {
+        initRenderer();
+        initCamera();
+        initScene();
+        initObject();
+        render();
+    }
+
+    var sphere, renderer2, scene2, camera2;
+    function drawEarth() {
+        initEarth();
+        animation();
+    }
+
+    function initEarth() {
+        renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById("sphereCanvas") });
+        //设置背景色，用于清除画面的颜色
+        renderer2.setClearColor(0x000000);
+        //添加场景
+        scene2 = new THREE.Scene();
+        //创建正交投影照相机
+        camera2 = new THREE.OrthographicCamera(-2, 2, -2, 2, 1, 10);
+        camera2.position.set(1.5, 4, 5);
+        camera2.lookAt(new THREE.Vector3(0, 0, 0));
+        scene2.add(camera2);
+
+        /*THREE.SphereGeometry(radius(半径), segmentsWidth(经度上切片数), segmentsHeight（纬度上切片数）,
+       phiStart（经度开始的弧度）, phiLength（经度夸过的弧度）, thetaStart, thetaLength)，设置了弧度，则前面设置的切片数是在弧度跨越的区域中进行切片*/
+        sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2, 14, 16), new THREE.MeshBasicMaterial({ color: 0x008080, wireframe: true }));
+        scene2.add(sphere);
+
+        renderer2.render(scene2, camera2);
+    }
+
+    function animation() {
+        requestAnimationFrame(animation);
+        //sphere.rotation.x += 0.02;
+        sphere.rotation.y += 0.03;
+        renderer2.render(scene2, camera2);
+    }
+
+    var torus, renderer3, scene3, camera3, interval;
+    function initTorus() {
+        renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById("torusKnotCanvas") });
+        renderer3.setClearColor(0x000000);
+
+        scene3 = new THREE.Scene();
+
+        camera3 = new THREE.PerspectiveCamera(60, 1 / 1, 1, 100);
+        camera3.position.set(0, 0, 2);
+        scene3.add(camera3);
+
+        torus = new THREE.Mesh(new THREE.TorusKnotGeometry(0.5, 0.2, 100, 8), new THREE.MeshBasicMaterial({ color: 0x90EE90, wireframe: true }));
+        scene3.add(torus);
+        //间隔20毫秒调用torusAnimation方法
+        interval = setInterval(torusAnimation, 20);
+    }
+
+    function torusAnimation() {
+        torus.rotation.x += 0.02;
+        torus.rotation.y += 0.02;
+        renderer3.render(scene3, camera3);
+    }
+
+    function drawTorus() {
+        initTorus();
+    }
+</script>

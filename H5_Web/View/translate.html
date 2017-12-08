@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+    <div id="btns">
+        <a class="btn" onclick="setlang('default',this)" href="javascript:;">English</a>
+        <a class="btn" onclick="setlang('cn',this)" href="javascript:;">中文</a>
+        <a class="btn" onclick="setlang('jp',this)" href="javascript:;">日本語</a>
+    </div>
+    <div style="line-height:27px;">
+        opacity是最重要的，因为它是CSS透明的标准属性，取值范围在0-1之间，目前支持的浏览器有：
+        Firefox、Chrome、Opera、Safari。（也就是说，除了IE，它支持所有主流浏览器）；
+        filter:alpha(opacity=50);是专门给IE设定的属性，取值的范围在0-100之间；
+        -moz-opacity是为了兼容一些老版本的Mozilla浏览器，取值范围在0-1之间；
+        -khtml-opacity是为了兼容一些老版本的Safari浏览器，取值范围在0-1之间。
+        看别人的代码，通常情况下会剩去后两个属性，这是因为Mozilla和Safari浏览器都支持自动更新
+        ，用这些浏览器的人一般用的也是较新的版本，因此后两个为了兼容较老的浏览器的属性不用也
+        罢。
+        以上就是CSS透明属性的基本用法，然而用到透明属性的地方，一般都是用在层叠层次较多的下层
+        来用，这就需要考虑CSS的继承问题：因为下层透明的元素，上层也会跟着透明。目前我还没有很
+        好的方法解决这个继承问题（有更好解决办法的欢迎留言告之），所以遇到这种情况，我通常是
+        把HTML部分要透明的部分独立分离开，然后采用定位的方法再把它定位到该放置的位置。
+        <!--{jp}これはHTML注釈のページの翻訳の解決方案を利用します。少量の静的なページに対して、この解決方案はもっと簡単です。頼りなくて，圧縮後は（~4kb）-->
+        <!--{cn}这是一个利用HTML注释的页面翻译解决方案。对于少量的静态页面，这种解决方案显得更简单。它没有依赖，压缩后只有(~4kb)。-->
+    </div>
+    
+    <script type="text/javascript" src="../js/translater.js"></script>
+    <script type="text/javascript">
+        var tran = new Translater();
+
+        var btns = document.getElementById('btns');
+
+        for (var i = 0; i < btns.childNodes.length; i++) {
+            var str = btns.childNodes[i].outerHTML;
+            if (str) {
+                str = str.match(/onclick=\"setlang\(\'(.*?)\'\,/);
+
+                if (str.length > 1 && str[1] === tran.lang_name) {
+                    btns.childNodes[i].className = 'btn active'
+                } else {
+                    btns.childNodes[i].className = 'btn'
+                }
+            }
+        }
+
+        function setlang(name, self) {
+            tran.setLang(name);
+            var btns = self.parentNode.children;
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].className = 'btn';
+            }
+            self.className = 'btn active';
+        }
+
+        //var tran = new Translater();
+        //if (tran.getLang() === "default") tran.setLang('en');
+
+        //hljs.initHighlightingOnLoad();
+
+        //var tran = new Translater();
+
+        //var btns = document.getElementById('btns');
+
+        //for (var i = 0; i < btns.childNodes.length; i++) {
+        //    var str = btns.childNodes[i].outerHTML;
+        //    if (str) {
+        //        str = str.match(/onclick=\"setlang\(\'(.*?)\'\,/);
+
+        //        if (str.length > 1 && str[1] === tran.lang_name) {
+        //            btns.childNodes[i].className = 'btn active'
+        //        } else {
+        //            btns.childNodes[i].className = 'btn'
+        //        }
+        //    }
+        //}
+
+        //function setlang(name, self) {
+        //    tran.setLang(name);
+        //    var btns = self.parentNode.children;
+        //    for (var i = 0; i < btns.length; i++) {
+        //        btns[i].className = 'btn';
+        //    }
+        //    self.className = 'btn active';
+        //}
+    </script>
+</body>
+</html>
