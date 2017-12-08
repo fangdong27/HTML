@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewreport" content="width=device-width,user-scalable=0,initial-scale=1.0,minmum-scale=1.0,maxmum-scale=1.0" />
+    <title>纯CSS3绘制的小猫笑脸动画DEMO演示</title>
+    <link type="text/css" href="css/maolaoshifu.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" />
+    <link href="css/animation.css" rel="stylesheet" />
+    <style>
+        .divTotal {
+            width: 200px;
+            height: 200px;
+            margin: 0px auto;
+            /*修改基本样式*/
+        }
+
+        .div1 {
+            margin-top: 100px;
+            transform: perspective(400px) rotatex(0deg) rotatey(0deg);
+            -webkit-transform: perspective(400px) rotatex(0deg) rotatey(0deg);
+            -moz-transform: perspective(400px) rotatex(0deg) rotatey(0deg);
+            -o-transform: perspective(400px) rotatex(0deg) rotatey(0deg);
+            /*拥有近大远小透视效果*/
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            -moz-transform-style: perserve-3d;
+            -o-transform-style: perserve-3d;
+            perspective: 200px\0\9;
+            /*设置为3d空间 ie不支持transform-style：perserve-3d，可添加perspective*/
+            position: relative;
+            /*border: 1px solid #000000;*/
+            animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite forwards;
+            /*旋转动画*/
+            -webkit-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite forwards;
+            -moz-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite forwards;
+            -o-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite forwards;
+        }
+
+            .div1 div {
+                position: absolute;
+                font-size: 80px;
+                line-height: 200px;
+                text-align: center;
+                top: 0;
+                left: 0;
+                /*内部样式*/
+            }
+
+        .div1_1 {
+            transform: translatez(100px);
+            -webkit-transform: translatez(100px);
+            -o-transform: translatez(100px);
+            -moz-transform: translatez(100px);
+            background-color: #eea0a0;
+            /*向前移动100像素，作为最前面的面*/
+        }
+
+        .div1_2 {
+            transform: rotatex(90deg) translatez(100px);
+            -webkit-transform: rotatex(90deg) translatez(100px);
+            -o-transform: rotatex(90deg) translatez(100px);
+            -moz-transform: rotatex(90deg) translatez(100px);
+            background-color: #ade673;
+            /*绕x轴旋转90度，在z轴正方向移动100像素，作为上面的面*/
+            /*注：旋转时坐标系会跟着一起旋转，z轴原来是垂直屏幕向外的，绕x轴旋转90度以后就是在屏幕上向上的方向*/
+        }
+
+        .div1_3 {
+            transform: rotatex(180deg) translatez(100px);
+            -webkit-transform: rotatex(180deg) translatez(100px);
+            -moz-transform: rotatex(180deg) translatez(100px);
+            -o-transform: rotatex(180deg) translatez(100px);
+            background-color: #909bf2;
+            /*绕x轴旋转180度，这时z轴垂直屏幕向内，在z轴正方向移动100像素，作为后面的面*/
+        }
+
+        .div1_4 {
+            transform: rotatex(270deg) translatez(100px);
+            -webkit-transform: rotatex(270deg) translatez(100px);
+            -moz-transform: rotatex(270deg) translatez(100px);
+            -o-transform: rotatex(270deg) translatez(100px);
+            background-color: #61d3b3;
+            /*绕x轴旋转270度，这时z轴向下，在z轴正方向移动100像素，作为下面的面*/
+        }
+
+        .div1_5 {
+            transform: rotatey(90deg) translatez(100px);
+            -webkit-transform: rotatey(90deg) translatez(100px);
+            -moz-transform: rotatey(90deg) translatez(100px);
+            -o-transform: rotatey(90deg) translatez(100px);
+            background-color: #55cfe0;
+            /*绕y轴旋转90度，这时z轴向右，在z轴正方向移动100像素，作为右面的面*/
+        }
+
+        .div1_6 {
+            transform: rotatey(270deg) translatez(100px);
+            -webkit-transform: rotatey(270deg) translatez(100px);
+            -moz-transform: rotatey(270deg) translatez(100px);
+            -o-transform: rotatey(270deg) translatez(100px);
+            background-color: #66d2dd;
+            /*绕y轴旋转90度，这时z轴向左，在z轴正方向移动100像素，作为左面的面*/
+        }
+
+        @-webkit-keyframes xuanzhuan {
+            from {
+                transform: perspective(400px) rotatex(0deg);
+                -webkit-transform: perspective(400px) rotatex(0deg);
+                -moz-transform: perspective(400px) rotatex(0deg);
+                -o-transform: perspective(400px) rotatex(0deg);
+            }
+
+            to {
+                transform: perspective(400px) rotatex(360deg);
+                -webkit-transform: perspective(400px) rotatex(360deg);
+                -moz-transform: perspective(400px) rotatex(360deg);
+                -o-transform: perspective(400px) rotatex(360deg);
+            }
+        }
+
+        @-moz-keyframes xuanzhuan {
+            from {
+                transform: perspective(400px) rotatex(0deg);
+                -webkit-transform: perspective(400px) rotatex(0deg);
+                -moz-transform: perspective(400px) rotatex(0deg);
+                -o-transform: perspective(400px) rotatex(0deg);
+            }
+
+            to {
+                transform: perspective(400px) rotatex(360deg);
+                -webkit-transform: perspective(400px) rotatex(360deg);
+                -moz-transform: perspective(400px) rotatex(360deg);
+                -o-transform: perspective(400px) rotatex(360deg);
+            }
+        }
+
+        @-o-keyframes xuanzhuan {
+            from {
+                transform: perspective(400px) rotatex(0deg);
+                -webkit-transform: perspective(400px) rotatex(0deg);
+                -moz-transform: perspective(400px) rotatex(0deg);
+                -o-transform: perspective(400px) rotatex(0deg);
+            }
+
+            to {
+                transform: perspective(400px) rotatex(360deg);
+                -webkit-transform: perspective(400px) rotatex(360deg);
+                -moz-transform: perspective(400px) rotatex(360deg);
+                -o-transform: perspective(400px) rotatex(360deg);
+            }
+        }
+
+        @keyframes xuanzhuan {
+            from {
+                transform: perspective(400px) rotatex(0deg);
+                -webkit-transform: perspective(400px) rotatex(0deg);
+                -moz-transform: perspective(400px) rotatex(0deg);
+                -o-transform: perspective(400px) rotatex(0deg);
+            }
+
+            to {
+                transform: perspective(400px) rotatex(360deg);
+                -webkit-transform: perspective(400px) rotatex(360deg);
+                -moz-transform: perspective(400px) rotatex(360deg);
+                -o-transform: perspective(400px) rotatex(360deg);
+            }
+        }
+
+        .div1:hover {
+            transform: perspective(400px) scale(1.5);
+            -webkit-transform: perspective(400px) scale(1.5);
+            -moz-transform: perspective(400px) scale(1.5);
+            -o-transform: perspective(400px) scale(1.5);
+            animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite paused forwards;
+            -webkit-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite paused forwards;
+            -moz-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite paused forwards;
+            -o-animation: xuanzhuan 5s cubic-bezier(0.0,0.0,0.0,0.0) infinite paused forwards;
+            /*有hover事件是动画暂停*/
+        }
+    </style>
+</head>
+<body>
+    <div id="animation" style="height:400px;width:600px;display:inline-block;">
+        <div class="div1 divTotal">
+            <div class="div1_1 divTotal">1</div>
+            <div class="div1_2 divTotal">2</div>
+            <div class="div1_3 divTotal">3</div>
+            <div class="div1_4 divTotal">4</div>
+            <div class="div1_5 divTotal">5</div>
+            <div class="div1_6 divTotal">6</div>
+        </div>
+    </div>
+    <div class="mao_box">
+        <div class="mao">
+            <div class="mao_head">
+                <div class="huawen">
+                    <div><!--头部花纹——左边橙色--></div>
+                </div>
+            </div>
+            <!--耳朵样式编写-->
+            <div class="erduo">
+                <div></div>
+                <div></div>
+            </div>
+            <!--眼睛样式编写-->
+            <div class="yanjing">
+                <div>
+                    <div class="yanquan">
+                        <div></div>
+                    </div>
+                    <div class="yanquan_hedding">
+                    </div>
+                    <div class="hong"></div>
+                </div>
+                <!--右眼样式编写-->
+                <div class="yan_right">
+                    <div class="yanquan">
+                        <div></div>
+                    </div>
+                    <div class="yanquan_hedding">
+                    </div>
+                    <div class="hong"></div>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div class="face_huawen">
+                <div class="face_huawen_huawen huawen_left">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="face_huawen_huawen huawen_right">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div class="bizi">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="zuiba_box">
+                <div class="zuiba">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:center;clear:both">
+    </div>
+    <div class="contContains">
+        <div class="" style="position: relative;">
+            <span class="timeNode" style="top: -60px;"></span>
+            <div class="cont animationOdd" style="left: 50px;">
+                <span class="timeNode " style="left: 50px; top: 120px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 115px;"></span>
+                <span class="timeLineH oddLine" style="z-index: 4; top: 45px;"></span>
+                <div class="timeLineW odd timeDiv animationRight">
+                    <div class="mianTime time1">3月5日</div>
+                    <div class="mainCont">江西省社会福利有奖募捐委员会及办事机构正式成立，并于同年在南昌、鹰潭、新余、萍乡等地市进行福利彩票试点销售。</div>
+                </div>
+                <span class="year">1988</span>
+            </div>
+            <div class="cont animationEven" style="">
+                <span class="timeNode " style="left: 50px; top: 100px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 95px;"></span>
+                <span class="timeLineH evenLine" style="z-index: 4;"></span>
+                <div class="timeLineW even timeDiv animationRight">
+                    <div class="mianTime time1">1989年12月</div>
+                    <div class="mainCont">第一批福利彩票公益金投向南昌市社会福利院及东湖区社会福利院等社会福利项目。</div>
+                </div>
+                <span class="year evenYearPos">1989</span>
+            </div>
+            <div class="cont animationOdd" style="">
+                <span class="timeNode " style="left: 50px; top: 100px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 95px; left: 16px;"></span>
+                <span class="timeLineH oddLine" style="z-index: 4; top: 25px;"></span>
+                <div class="timeLineW odd timeDiv animationRight">
+                    <div class="mianTime time1">1990年5月</div>
+                    <div class="mainCont">在南昌、上饶、东乡等市县拉开了即开型福利彩票“大奖组”形式销售序幕。</div>
+                </div>
+                <span class="year">1990</span>
+            </div>
+            <div class="cont animationEven" style="">
+                <span class="timeNode " style="left: 50px; top: 120px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 115px;"></span>
+                <span class="timeLineH evenLine" style="z-index: 4; top: 130px;"></span>
+                <div class="timeLineW even timeDiv animationRight" style="top: 120px;">
+                    <div class="mianTime time1">1998年秋季</div>
+                    <div class="mainCont">圆满完成国务院下达我省9000万元“赈灾彩票”销售任务，并荣获民政部颁发的“赈灾突出贡献奖”。</div>
+                </div>
+                <span class="year evenYearPos">1998</span>
+            </div>
+
+            <%--<div class="cont animationOdd" style="left:710px;">
+                <span class="timeNode " style="left: 50px; top: 80px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 75px; left: 16px;"></span>
+                <span class="timeLineH oddLine" style="z-index: 4; top: 5px;"></span>
+                <div class="timeLineW odd timeDiv">
+                    <div class="mianTime time1">2000年9月</div>
+                    <div class="mainCont">经批准，江西省福利彩票发行中心正式设立，并与省募委办合署办公（两块牌子一套人马）。</div>
+                </div>
+                <div class="timeLineW odd timeDiv">
+                    <div class="mianTime time1">2000年11月</div>
+                    <div class="mainCont">江西省政府批复江西省民政厅建设江西省电脑福利彩票销售系统，并在全省发行电脑福利彩票。</div>
+                </div>
+                <span class="year">2000</span>
+            </div>
+            <div style="display: inline-block; *display: inline; *zoom: 1; position: relative; width: 230px; left: -300px;" class="animationEven">
+                <span class="timeNode " style="left: 50px; top: 100px;"></span>
+                <span class="timeMainNode fixedTimeNode" style="top: 95px;"></span>
+                <span class="timeLineH evenLine" style="z-index: 4;"></span>
+                <div class="timeLineW even timeDiv" style="width: 230px; left: -70px;">
+                    <div class="mianTime time1">2001年1月16</div>
+                    <div class="mainCont">江西省电脑福利彩票乐透型３1选７游戏正式在全省上市发行销售，开创了江西福利彩票事业的新纪元。</div>
+                </div>
+                <span class="year evenYearPos">2001</span>
+            </div>--%>
+
+            <span class="timeLineW"></span>
+            <span class="timeNode" style="margin-left: -7px; top: -105px;"></span>
+
+        </div>
+    </div>
+</body>
+</html>

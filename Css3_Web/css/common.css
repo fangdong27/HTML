@@ -1,0 +1,32 @@
+﻿/*================共用样式===============*/
+body {margin:0px ;padding:0px ;font-size:16px;line-height:25px; font-family:'Microsoft YaHei',"宋体","Arial Narrow";color: #666666;}
+.cont{display: inline-block; *display: inline; *zoom: 1; position: relative; width: 200px; left: 30px;}
+.animationOdd{animation: fadeInLeft 2s linear 0s 1 ;  -webkit-animation: fadeInLeft 2s linear 0s 1 ;
+              -moz-animation: fadeInLeft 2s linear 0s 1 ; /* Firefox */-o-animation: fadeInLeft 2s linear 0s 1;    /* Opera */}
+.animationEven{animation: fadeInDown 2s ease-in-out 0s 1;  -webkit-animation: fadeInDown 2s linear 0s 1;-moz-animation:fadeInDown 2s linear 0s 1;-o-animation:fadeInDown 2s linear 0s 1;}
+.animationRight{animation:fadeInRight 2s ease 0s 1;-webkit-animation:fadeInRight 2s ease 0s 1;-moz-animation:fadeInRight 2s ease 0s 1;-o-animation:fadeInRight 2s ease 0s 1;}
+.contContains{width:1000px;margin:0px auto;}
+.timeLineW{border:3px solid #979696;width:90%;position:relative;margin-left:37px;top:-110px;z-index:-1; vertical-align:text-top; display:inline-block;*display:inline;*zoom:1;line-height:40px; border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-mz-border-radius:5px;}
+.timeLineH{box-shadow:0px 0px 10px rgba(0,0,0,0.5); width:5px;height:55px;border:1px solid #fff;background-color:#fff; position:relative;top:-75px;left:-8px; vertical-align:text-top; display:inline-block;*display:inline;*zoom:1;line-height:40px; border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;-mz-border-radius:5px;}
+.timeNode{display:inline-block;*display:inline;*zoom:1;position:relative;z-index:2;width:40px;height:40px;margin-right:-5px; border-radius:50%;-webkit-border-radius:50%;-moz-border-radius:50%;-mz-border-radius:50%;background-color:#979696;}
+.timeMainNode{display:inline-block;*display:inline;*zoom:1;width:30px;height:30px; border-radius:50%;-webkit-border-radius:50%;-moz-border-radius:50%;-mz-border-radius:50%;background-color:#fff;}
+.fixedTimeNode{position:relative;left:15px;z-index:3;top:-5px;}
+.timeDiv{box-shadow:0px 0px 10px rgba(0,0,0,0.5); line-height:25px;border:0px;z-index:4;width:200px;left:-70px;}
+.mianTime{font-size:18px;width:100%;text-align:center;color:#fff;border-top-left-radius:5px;-webkit-top-left-radius:5px;-moz-top-left-radius:5px;-mz-top-left-radius:5px;border-top-right-radius:5px;-webkit-top-right-radius:5px;-moz-top-right-radius:5px;-mz-top-right-radius:5px;}
+.mainCont{font-size:12px;padding:5px; line-height:20px;}
+.time1{background-color:#9abd57;}
+.year{font-size:26px;display:inline-block;*display:inline;*zoom:1;position:relative;left:35px;top:-30px;}
+.odd{top:-130px;}
+.oddLine{top:26px;}
+.even{top:110px;}
+.evenLine{top:110px;}
+.evenYearPos{top:-110px;}
+.contDiv{left:-100px;}
+    
+
+
+
+
+
+
+
